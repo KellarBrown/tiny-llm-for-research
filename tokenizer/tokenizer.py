@@ -23,7 +23,7 @@ class Tokenizer:
     def build_vocab(cls, text:str, min_freq: int = 1):
         tokens = re.split(r'([,.:;?_!"()\']|--|\s)', text)
         tokens = [t.strip() for t in tokens if t.strip()]
-    
+        counter = Counter(tokens)
 
 if __name__ == "__main__":
     vocab = {"Hello": 0, "world": 1, "<unk>": 2}
@@ -31,3 +31,4 @@ if __name__ == "__main__":
 
     print("Encoded:", tokenizer.encode("Hello you beautiful world"))
     print("Decoded:", tokenizer.decode([0, 2, 2, 1]))
+    
