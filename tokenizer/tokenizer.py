@@ -24,7 +24,11 @@ class Tokenizer:
         tokens = re.split(r'([,.:;?_!"()\']|--|\s)', text)
         tokens = [t.strip() for t in tokens if t.strip()]
         counter = Counter(tokens)
-
+        filtered_tokens = [token for token, freq in counter.items() if freq >= min_freq]
+        filtered_tokens.append("<unk>")
+        vocab = {token: idx for idx, token in enumerate(filter)}
+        return cls(vocab)
+    
 if __name__ == "__main__":
     vocab = {"Hello": 0, "world": 1, "<unk>": 2}
     tokenizer = Tokenizer(vocab)
