@@ -30,9 +30,3 @@ class Tokenizer:
         vocab = {token: idx for idx, token in enumerate(filtered_tokens)}
         return cls(vocab)
     
-if __name__ == "__main__":
-
-    sample_text = "Friend, Romans, countrymen, lend me your ears. dlkfjdk"
-    tokenizer = Tokenizer.build_vocab(sample_text, min_freq=2)
-    print("Vocab:", tokenizer.str_to_int)
-    print("Encode:", tokenizer.encode("Friend, Romans, countrymen, lend me your ears. dlkfjdk"))
