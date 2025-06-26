@@ -60,3 +60,44 @@ class TransformerBlock(nn.Module):
         x = self.norm2(x + self.dropout(ff_out))
 
         return x
+class TinyGPT(nn.Module):
+    def __init__(self,
+                 vocab_size: int,
+                 d_model: int = 128,
+                 n_heads: int = 8,
+                 num_layers: int = 4,
+                 ff_hidden: int = 512,
+                 max_seq_len: int = 512,
+                 dropout: float = 0.1):
+        super().__init__()
+        self.token_embed = nn.Embedding(vocab_size, d_model)
+        self.pos_embed = nn.Embedding(max_seq_len,   d_model)
+        self.drop = nn.Dropout(dropout)
+
+        self.blocks = nn.ModuleList([
+            TransformerBlock(d_model, n_heads, ff_hidden, dropout)
+            for _ in range(num_layers)
+        ])
+
+        self.ln_f = nn.LayerNorm(d_model)
+        
+        self.head = nn.Linear(d_model, vocab_size, bias=False)
+
+    def forward(self, idx: torch.Tensor):
+
+        B, T = idx.size()
+        tok_emb = self.token_embed(idx)                 
+        pos_ids = torch.arange(T, device=idx.device)     
+        pos_emb = self.pos_embed(pos_ids).unsqueeze(0)   
+        x = self.drop(tok_emb + pos_emb)                 
+        
+        for block in self.blocks:
+            x = block(x)                              
+
+        x = self.ln_f(x)                         
+        logits = self.head(x)                         
+        return logits
+
+
+
+
