@@ -19,6 +19,7 @@ class Tokenizer:
         text = " ".join([self.int_to_str[i] for i in ids]) 
         text = re.sub(r'\s+([,.?!"()\'])', r'\1', text)
         return text
+    
     @classmethod
     def build_vocab(cls,text:str, min_freq: int = 1):
         tokens = re.split(r'([,.:;?_!"()\']|--|\s)', text)
